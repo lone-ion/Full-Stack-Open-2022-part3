@@ -1,8 +1,26 @@
-const { request } = require('express');
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
 
+morgan.token('body', function (req, res) {
+  return JSON.stringify(req.body);
+});
+
 app.use(express.json());
+app.use(
+  morgan(function (tokens, req, res) {
+    return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, 'content-length'),
+      '-',
+      tokens['response-time'](req, res),
+      'ms',
+      tokens.body(req, res),
+    ].join(' ');
+  })
+);
 
 let persons = [
   {
@@ -58,7 +76,7 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end();
 });
 
-const generateId = () => {};
+// const generateId = () => {};
 
 app.post('/api/persons', (request, response) => {
   const body = request.body;
@@ -76,9 +94,9 @@ app.post('/api/persons', (request, response) => {
   }
 
   const person = {
+    id: Math.floor(Math.random() * 1000000 + 1),
     name: body.name,
     number: body.number,
-    id: Math.floor(Math.random() * 1000000 + 1),
   };
 
   persons = persons.concat(person);
