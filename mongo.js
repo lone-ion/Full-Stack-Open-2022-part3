@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const mongoose = require('mongoose');
 
 if (process.argv.length < 3) {
@@ -16,7 +17,7 @@ const personSchema = new mongoose.Schema({
 const Person = mongoose.model('Person', personSchema);
 
 if (process.argv.length < 4) {
-  mongoose.connect(url).then((result) => {
+  mongoose.connect(url).then(() => {
     console.log('connected');
 
     Person.find({})
@@ -34,7 +35,7 @@ if (process.argv.length < 4) {
 
   mongoose
     .connect(url)
-    .then((result) => {
+    .then(() => {
       console.log('connected');
 
       const person = new Person({

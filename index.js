@@ -7,7 +7,7 @@ const app = express();
 app.use(express.static('build'));
 app.use(express.json());
 
-morgan.token('body', function (req, res) {
+morgan.token('body', function (req) {
   return JSON.stringify(req.body);
 });
 
@@ -50,9 +50,9 @@ app.get('/api/persons/:id', (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then((person) => {
+    .then(() => {
       response.status(204).end();
     })
     .catch((error) => next(error));
@@ -107,6 +107,7 @@ const errorHandler = (error, request, response, next) => {
 // handler of requests with result to errors
 app.use(errorHandler);
 
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT;
 app.listen(PORT);
 console.log(`Server running on port ${PORT}`);
